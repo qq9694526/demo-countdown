@@ -16,23 +16,8 @@ class CountDown {
     this.time = time;
     // 绑定事件
     $(el).on('touchZero', onTouchZero)
-    // 初始化倒计时
-    this.init()
-  }
-
-  init() {
-    const $el = this.$el
-    $el.html(this._getShowText(this.time))
-    clearInterval(this._timer)
-    this._isRunning = true
-    this._timer = setInterval(() => {
-      this.time -= 1000
-      $el.html(this._getShowText(this.time))
-      if (this.time <= 0) {
-        clearInterval(this._timer)
-        $el.trigger('touchZero', this)
-      }
-    }, 1000);
+    // 初始化进度条
+    this._initProcess()
   }
 
   stop() {
@@ -44,12 +29,33 @@ class CountDown {
     if (this._isRunning) { // 防止重复init
       return
     }
-    this.init()
+    this._initTimer()
   }
 
   reset() {
+    this.stop()
     this.time = this.options.time
-    this.init()
+    this._initProcess()
+  }
+
+  _initTimer() {
+    const $el = this.$el
+    clearInterval(this._timer)
+    this._isRunning = true
+    this._timer = setInterval(() => {
+      this.time -= 1000
+      this._rotateCircle()
+      $("#c-countnum").html(this._getShowText(this.time))
+      if (this.time <= 0) {
+        clearInterval(this._timer)
+        $el.trigger('touchZero', this)
+      }
+    }, 1000);
+  }
+
+  _initProcess() {
+    this.circleLength = Math.floor(2 * Math.PI * 50);
+    this.$el.html(this._svghtmls(this._getShowText(this.time)))
   }
 
   _getShowText(timestamp) {
@@ -69,6 +75,22 @@ class CountDown {
   _fillZero(value) {
     return value < 10 ? '0' + value : value
   }
+
+  _svghtmls(defaultValue) {
+    return `<div class="c-count-wrap">
+    <svg xmlns="http://www.w3.org/200/svg" height="110" width="110">
+      <circle cx="55" cy="55" r="50" fill="none" stroke="#9e9e9e" stroke-width="5" stroke-linecap="round" />
+      <circle id="c-count-process" class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
+    </svg>
+    <span id="c-countnum" class="c-count-num">${defaultValue}</span>
+  </div>`
+  }
+
+  _rotateCircle() {
+    const val = parseInt(this.time / this.options.time * 100)
+    $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + this.circleLength * val / 100 + ",10000");
+  }
+
 }
 
 window.CountDown = CountDown
