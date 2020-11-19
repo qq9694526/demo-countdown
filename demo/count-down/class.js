@@ -51,6 +51,7 @@ class CountDown {
         $el.trigger('touchZero', this)
         $("#c-countnum").html('已结束')
         $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + 0 + ",10000");
+        $("#c-music")[0].play()
       }
     }, 1000);
   }
@@ -85,6 +86,9 @@ class CountDown {
       <circle id="c-count-process" class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
     </svg>
     <span id="c-countnum" class="c-count-num">${defaultValue}</span>
+    <audio preload id="c-music">
+      <source src="${this.options.audioPath}/music.mp3" type="audio/mpeg">
+    </audio>
   </div>`
   }
 
