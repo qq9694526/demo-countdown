@@ -13,7 +13,7 @@ class CountDown {
     const { el, time, onTouchZero } = originOptions
     this.options = originOptions
     this.$el = $(el);
-    this.time = time;
+    this.time = parseInt(time);
     // 绑定事件
     $(el).on('touchZero', onTouchZero)
     // 初始化进度条
@@ -43,18 +43,19 @@ class CountDown {
     clearInterval(this._timer)
     this._isRunning = true
     this._timer = setInterval(() => {
-      this.time -= 1000
-      this._rotateCircle()
+      this.time -= 1
+      this._moveProcess()
       $("#c-countnum").html(this._getShowText(this.time))
       if (this.time <= 0) {
         clearInterval(this._timer)
         $el.trigger('touchZero', this)
+        $("#c-countnum").html('已结束')
+        $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + 0 + ",10000");
       }
     }, 1000);
   }
 
   _initProcess() {
-    this.circleLength = Math.floor(2 * Math.PI * 50);
     this.$el.html(this._svghtmls(this._getShowText(this.time)))
   }
 
@@ -62,19 +63,20 @@ class CountDown {
     if (typeof timestamp !== 'number') {
       return "00:00"
     }
-    const hour = parseInt(timestamp / 1000 / 60 / 60)
-    const minute = parseInt(timestamp / 1000 / 60 % 60)
-    const second = parseInt(timestamp / 1000 % 60)
-    let rsult = `${this._fillZero(minute)}:${this._fillZero(second)}`
+    const hour = parseInt(timestamp / 60 / 60)
+    const minute = parseInt(timestamp / 60 % 60)
+    const second = parseInt(timestamp % 60)
+    let result = `${this._fillZero(minute)}:${this._fillZero(second)}`
     if (hour > 0) {
-      rsult = `${this._fillZero(hour)}:${rsult}`
+      result = `${this._fillZero(hour)}:${result}`
     }
-    return rsult
+    return result
   }
 
   _fillZero(value) {
     return value < 10 ? '0' + value : value
   }
+
 
   _svghtmls(defaultValue) {
     return `<div class="c-count-wrap">
@@ -86,9 +88,10 @@ class CountDown {
   </div>`
   }
 
-  _rotateCircle() {
-    const val = parseInt(this.time / this.options.time * 100)
-    $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + this.circleLength * val / 100 + ",10000");
+  _moveProcess() {
+    const currentPercent = parseFloat(this.time / this.options.time).toFixed(2)
+    const circleLength = Math.floor(2 * Math.PI * 50);
+    $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + currentPercent * circleLength + ",10000");
   }
 
 }
