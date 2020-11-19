@@ -17,7 +17,7 @@ class CountDown {
     // 绑定事件
     $(el).on('touchZero', onTouchZero)
     // 初始化进度条
-    this._initProcess()
+    this._initHtml()
   }
 
   stop() {
@@ -35,29 +35,24 @@ class CountDown {
   reset() {
     this.stop()
     this.time = this.options.time
-    this._initProcess()
+    this._initHtml()
   }
 
   _initTimer() {
-    const $el = this.$el
     clearInterval(this._timer)
     this._isRunning = true
     this._timer = setInterval(() => {
       this.time -= 1
-      this._moveProcess()
       $("#c-countnum").html(this._getShowText(this.time))
+      this._moveProcess()
       if (this.time <= 0) {
-        clearInterval(this._timer)
-        $el.trigger('touchZero', this)
-        $("#c-countnum").html('已结束')
-        $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + 0 + ",10000");
-        $("#c-music")[0].play()
+        this._turnOver()
       }
     }, 1000);
   }
 
-  _initProcess() {
-    this.$el.html(this._svghtmls(this._getShowText(this.time)))
+  _initHtml() {
+    this.$el.html(this._getWraperHtmls(this._getShowText(this.time)))
   }
 
   _getShowText(timestamp) {
@@ -78,26 +73,48 @@ class CountDown {
     return value < 10 ? '0' + value : value
   }
 
-
-  _svghtmls(defaultValue) {
-    return `<div class="c-count-wrap">
-    <svg xmlns="http://www.w3.org/200/svg" height="110" width="110">
-      <circle cx="55" cy="55" r="50" fill="none" stroke="#9e9e9e" stroke-width="5" stroke-linecap="round" />
-      <circle id="c-count-process" class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
-    </svg>
-    <span id="c-countnum" class="c-count-num">${defaultValue}</span>
-    <audio preload id="c-music">
-      <source src="${this.options.audioPath}/music.mp3" type="audio/mpeg">
-    </audio>
-  </div>`
+  _getWraperHtmls(defaultValue) {
+    let htmls = ""
+    const { audioPath, type } = this.options
+    if (type === 'mini') {
+      htmls = `<div class="c-count-wrap">
+        <span id="c-countnum" class="c-count-num">${defaultValue}</span>
+        <audio preload id="c-music">
+          <source src="${audioPath}/music.mp3" type="audio/mpeg">
+        </audio>
+      </div>`
+    } else {
+      htmls = `<div class="c-count-wrap">
+      <svg xmlns="http://www.w3.org/200/svg" height="110" width="110">
+        <circle cx="55" cy="55" r="50" fill="none" stroke="#ccc" stroke-width="5" stroke-linecap="round" />
+        <circle id="c-count-process" class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
+      </svg>
+      <span id="c-countnum" class="c-count-num">${defaultValue}</span>
+      <audio preload id="c-music">
+        <source src="${audioPath}/music.mp3" type="audio/mpeg">
+      </audio>
+    </div>`
+    }
+    return htmls
   }
 
   _moveProcess() {
-    const currentPercent = parseFloat(this.time / this.options.time).toFixed(2)
+    const { time: totalTime, type } = this.options
+    if (type === 'mini') {
+      return
+    }
+    const currentPercent = parseFloat(this.time / totalTime).toFixed(2)
     const circleLength = Math.floor(2 * Math.PI * 50);
     $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + currentPercent * circleLength + ",10000");
   }
 
+  _turnOver() {
+    clearInterval(this._timer)
+    this.$el.trigger('touchZero', this)
+    if (this.options.needRing) {
+      $("#c-music")[0].play()
+    }
+  }
 }
 
 window.CountDown = CountDown
