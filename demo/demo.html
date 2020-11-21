@@ -13,6 +13,8 @@
 	<button id="btn-stop">暂停</button>
 	<button id="btn-begin">开始</button>
 	<button id="btn-reset">重置</button>
+	<div>
+	</div>
 </body>
 <!-- <script data-main="js/app.js" src="lib/require/require.js"></script> -->
 <script src="../lib/jquery-2.0.0.min.js"></script>
@@ -43,7 +45,7 @@
 		countdown.play()
 	})
 	$("#btn-reset").on('click', () => {
-		countdown.reset()
+		countdown.reset().play()
 	})
 
 </script>
