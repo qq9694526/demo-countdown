@@ -20,6 +20,7 @@
       this.options = originOptions
       this.$el = $(el);
       this.time = parseInt(time);
+      this._appendStyle()
       // 绑定事件
       $(el).on('touchZero', onTouchZero)
       // 初始化进度条
@@ -120,6 +121,31 @@
       if (this.options.needRing) {
         $("#c-music")[0].play()
       }
+    }
+
+    _appendStyle() {
+      const style = document.createElement('style');
+      style.innerText = `.c-count-wrap {
+        display: inline-block;
+        position: relative;
+        font-size: 0;
+      }
+      .c-count-wrap .c-count-num {
+        position: absolute;
+        display: inline-block;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        transform: translateY(-50%);
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      .c-count-wrap .c-count-process {
+        transform-origin: 55px 55px;
+        transform: rotate(-90deg);
+      }`
+      document.head.appendChild(style)
     }
   }
   return CountDown;
