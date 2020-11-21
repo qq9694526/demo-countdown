@@ -20,11 +20,12 @@
       this.options = originOptions
       this.$el = $(el);
       this.time = parseInt(time);
+      // 插入style
       this._appendStyle()
       // 绑定事件
       $(el).on('touchZero', onTouchZero)
-      // 初始化进度条
-      this._initHtml()
+      // 初始化dom
+      this._initWrapper()
     }
 
     stop() {
@@ -36,13 +37,16 @@
       if (this._isRunning) { // 防止重复init
         return
       }
+      if (this.time <= 0) {
+        return
+      }
       this._initTimer()
     }
 
     reset() {
       this.stop()
       this.time = this.options.time
-      this._initHtml()
+      this._initWrapper()
     }
 
     _initTimer() {
@@ -50,7 +54,7 @@
       this._isRunning = true
       this._timer = setInterval(() => {
         this.time -= 1
-        $("#c-countnum").html(this._getShowText(this.time))
+        $("#c-countnum").html(this._getRemainingTime(this.time))
         this._moveProcess()
         if (this.time <= 0) {
           this._turnOver()
@@ -58,11 +62,11 @@
       }, 1000);
     }
 
-    _initHtml() {
-      this.$el.html(this._getWraperHtmls(this._getShowText(this.time)))
+    _initWrapper() {
+      this.$el.html(this._getWraperHtml(this._getRemainingTime(this.time)))
     }
 
-    _getShowText(timestamp) {
+    _getRemainingTime(timestamp) {
       if (typeof timestamp !== 'number') {
         return "00:00"
       }
@@ -76,11 +80,7 @@
       return result
     }
 
-    _fillZero(value) {
-      return value < 10 ? '0' + value : value
-    }
-
-    _getWraperHtmls(defaultValue) {
+    _getWraperHtml(defaultValue) {
       let htmls = ""
       const { audioPath, type } = this.options
       if (type === 'mini') {
@@ -123,6 +123,10 @@
       }
     }
 
+    _fillZero(value) {
+      return value < 10 ? '0' + value : value
+    }
+
     _appendStyle() {
       const style = document.createElement('style');
       style.innerText = `.c-count-wrap {
@@ -148,5 +152,6 @@
       document.head.appendChild(style)
     }
   }
+
   return CountDown;
 }));
