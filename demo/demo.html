@@ -4,40 +4,62 @@
 <head>
 	<meta charset="utf-8">
 	<title>倒计时组件demo</title>
+	<style>
+		body{
+			padding: 40px;
+		}
+		.input-wraper {
+			margin:20px 0;
+		}
+	</style>
 </head>
 
 <body>
-	<p>============</p>
+	<p>=====环形进度条版=====</p>
 	<div id="app"></div>
-	<p>============</p>
+	<div class="input-wraper">
+		<input id="time" type="number" placeholder="请输入倒计时时间(s)">
+		<button id="btn-init">实例化</button>
+	</div>
 	<button id="btn-stop">暂停</button>
 	<button id="btn-begin">开始</button>
 	<button id="btn-reset">重置</button>
-	<div>
-	</div>
+	<p>=====简洁迷你版=======</p>
+	<div id="app2"></div>
 </body>
-<!-- <script data-main="js/app.js" src="lib/require/require.js"></script> -->
-<script src="../lib/jquery-2.0.0.min.js"></script>
+<script src="./count-down/jquery-2.0.0.min.js"></script>
 <script src="./count-down/countdown.js"></script>
 <script>
-	// 安装引入
-	// 铃声
-	// 环形进度条
-	// 特色：多方式引入安装；完善的文档；ES实践；svg  audio
-
-	const countdown = new CountDown({
+	let countdown = new CountDown({
 		el: '#app',
-		time: 3, //单位秒
+		time: 10, //单位秒
 		type: "normal", // ['mini','normal'] 默认normal
-		needRing: false,// 默认false
+		needRing: true,// 默认false
 		audioPath: './count-down',//mp3资源路径
 		onTouchZero(e) {
 			console.log('倒计时结束')
-			// countdown.reset()
 		}
 	})
-	countdown.play()
+	// countdown.play()
 
+
+	$("#btn-init").on('click', () => {
+		const time = $("#time").val()
+		if (time <= 0) {
+			return
+		}
+		countdown.stop()
+		countdown = new CountDown({
+			el: '#app',
+			time, //单位秒
+			type: "normal", // ['mini','normal'] 默认normal
+			needRing: true,// 默认false
+			audioPath: './count-down',//mp3资源路径
+			onTouchZero(e) {
+				console.log('倒计时结束')
+			}
+		})
+	})
 	$("#btn-stop").on('click', () => {
 		countdown.stop()
 	})
@@ -48,6 +70,18 @@
 		countdown.reset().play()
 	})
 
+	// // demo2
+	// let countdown2 = new CountDown({
+	// 	el: '#app2',
+	// 	time: 10, //单位秒
+	// 	type: "mini", // ['mini','normal'] 默认normal
+	// 	needRing: false,// 默认false
+	// 	audioPath: './count-down',//mp3资源路径
+	// 	onTouchZero(e) {
+	// 		console.log('倒计时2结束')
+	// 	}
+	// })
+	// countdown2.play()
 </script>
 
 </html>

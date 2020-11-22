@@ -13,7 +13,8 @@
   class CountDown {
     _defaultOptions = {
       el: 'body',
-      time: 10
+      time: 10 ,
+      audioPath: './count-down'
     }
     _timer = null
     _isRunning = false
