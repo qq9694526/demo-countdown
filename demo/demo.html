@@ -70,18 +70,18 @@
 		countdown.reset().play()
 	})
 
-	// // demo2
-	// let countdown2 = new CountDown({
-	// 	el: '#app2',
-	// 	time: 10, //单位秒
-	// 	type: "mini", // ['mini','normal'] 默认normal
-	// 	needRing: false,// 默认false
-	// 	audioPath: './count-down',//mp3资源路径
-	// 	onTouchZero(e) {
-	// 		console.log('倒计时2结束')
-	// 	}
-	// })
-	// countdown2.play()
+	// demo2
+	let countdown2 = new CountDown({
+		el: '#app2',
+		time: 10, //单位秒
+		type: "mini", // ['mini','normal'] 默认normal
+		needRing: false,// 默认false
+		audioPath: './count-down',//mp3资源路径
+		onTouchZero(e) {
+			console.log('倒计时2结束')
+		}
+	})
+	countdown2.play()
 </script>
 
 </html>

@@ -13,7 +13,7 @@
   class CountDown {
     _defaultOptions = {
       el: 'body',
-      time: 10 ,
+      time: 10,
       audioPath: './count-down'
     }
     _timer = null
@@ -64,7 +64,7 @@
       this._isRunning = true
       this._timer = setInterval(() => {
         this.time -= 1
-        $("#c-countnum").html(this._getRemainingTime(this.time))
+        this.$el.find('.c-count-num').html(this._getRemainingTime(this.time))
         this._moveProcess()
         if (this.time <= 0) {
           this._turnOver()
@@ -95,8 +95,8 @@
       const { audioPath, type } = this.options
       if (type === 'mini') {
         htmls = `<div class="c-count-wrap">
-          <span id="c-countnum" class="c-count-num">${defaultValue}</span>
-          <audio preload id="c-music">
+          <span class="c-count-num">${defaultValue}</span>
+          <audio preload class="c-music">
             <source src="${audioPath}/music.mp3" type="audio/mpeg">
           </audio>
         </div>`
@@ -104,10 +104,10 @@
         htmls = `<div class="c-count-wrap">
         <svg xmlns="http://www.w3.org/200/svg" height="110" width="110">
           <circle cx="55" cy="55" r="50" fill="none" stroke="#ccc" stroke-width="5" stroke-linecap="round" />
-          <circle id="c-count-process" class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
+          <circle class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
         </svg>
-        <span id="c-countnum" class="c-count-num">${defaultValue}</span>
-        <audio preload id="c-music">
+        <span class="c-count-num">${defaultValue}</span>
+        <audio preload class="c-music">
           <source src="${audioPath}/music.mp3" type="audio/mpeg">
         </audio>
       </div>`
@@ -122,14 +122,14 @@
       }
       const currentPercent = parseFloat(this.time / totalTime).toFixed(2)
       const circleLength = Math.floor(2 * Math.PI * 50);
-      $('#c-count-process')[0].setAttribute("stroke-dasharray", "" + currentPercent * circleLength + ",10000");
+      this.$el.find('.c-count-process')[0].setAttribute("stroke-dasharray", "" + currentPercent * circleLength + ",10000");
     }
 
     _turnOver() {
       clearInterval(this._timer)
       this.$el.trigger('touchZero', this)
       if (this.options.needRing) {
-        $("#c-music")[0].play()
+        this.$el.find('.c-music')[0].play()
       }
     }
 
