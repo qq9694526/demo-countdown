@@ -29,6 +29,7 @@
 	<button id="btn-stop">暂停</button>
 	<button id="btn-begin">开始</button>
 	<button id="btn-reset">重置</button>
+
 	<p>=====简洁迷你版=======</p>
 	<div id="app2"></div>
 	<button id="btn-stop2">暂停</button>
@@ -38,6 +39,7 @@
 <script src="./count-down/jquery-2.0.0.min.js"></script>
 <script src="./count-down/countdown.js"></script>
 <script>
+	// demo
 	let countdown = new CountDown({
 		el: '#app',
 		time: 10, //单位秒
@@ -49,7 +51,6 @@
 		}
 	})
 	// countdown.play()
-
 
 	$("#btn-init").on('click', () => {
 		const time = $("#time").val()

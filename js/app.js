@@ -28,7 +28,9 @@ requirejs.config({
         }
     }
 })
-require(["jquery", "yusys", "login"], function ($, yusys, login) {
-    // do something
-	login.init()
+require(["jquery", "yusys", "../demo/count-down/countdown"], function ($, yusys, CountDown) {
+  // do something
+	// login.init()
+	const countdown = new CountDown()
+	countdown.play()
 })

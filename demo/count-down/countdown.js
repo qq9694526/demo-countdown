@@ -13,8 +13,10 @@
   class CountDown {
     _defaultOptions = {
       el: 'body',
-      time: 10,
-      audioPath: './count-down'
+      time: 10, //单位秒
+      type: "normal", // ['mini','normal'] 默认normal
+      needRing: true,// 默认false
+      audioPath: './count-down'//mp3资源路径
     }
     _timer = null
     _isRunning = false
@@ -29,16 +31,10 @@
       this.time = parseInt(time);
       // 插入style
       this._appendStyle()
-      // 绑定事件
-      $(el).on('touchZero', onTouchZero)
       // 初始化dom
       this._initWrapper()
-    }
-
-    stop() {
-      clearInterval(this._timer)
-      this._isRunning = false
-      return this
+      // 绑定倒计时归零事件
+      $(el).on('touchZero', onTouchZero)
     }
 
     play() {
@@ -52,6 +48,12 @@
       return this
     }
 
+    stop() {
+      clearInterval(this._timer)
+      this._isRunning = false
+      return this
+    }
+
     reset() {
       this.stop()
       this.time = this.options.time
@@ -62,9 +64,10 @@
     _initTimer() {
       clearInterval(this._timer)
       this._isRunning = true
+      const $countNum = this.$el.find('.c-count-num')
       this._timer = setInterval(() => {
         this.time -= 1
-        this.$el.find('.c-count-num').html(this._getRemainingTime(this.time))
+        $countNum.html(this._getRemainingTime(this.time))
         this._moveProcess()
         if (this.time <= 0) {
           this._turnOver()
