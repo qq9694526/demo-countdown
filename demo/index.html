@@ -53,7 +53,7 @@
 	// countdown.play()
 
 	$("#btn-init").on('click', () => {
-		const time = $("#time").val()
+		const time = Number($("#time").val())
 		if (time <= 0) {
 			return
 		}
