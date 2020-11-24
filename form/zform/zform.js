@@ -5,22 +5,55 @@
 }(this, function () {
   'use strict';
   function Zform(options) {
+    const _this = this
+    this.options = options
     this.$el = $(options.el)
     this.items = options.items
     this._initWrapper()
     this.$el.on('click', '.z-button--primary', () => {
       const formDom = this.$el.find('.z-form')[0]
-      const result = this.items.map(item => {
+      const formData = this.items.map(item => {
         return {
           name: item.name,
           value: formDom[item.name].value
         }
       })
-      options.onSubmit && options.onSubmit(result)
+      const validateResult = _this._validate()
+      options.onSubmit && options.onSubmit(formData, validateResult)
     })
     this.$el.on('click', '.z-button--default', () => {
       this.$el.find('.z-form')[0].reset()
+      this.$el.find('.z-form-item').removeClass('is-error')
     })
+  }
+
+  Zform.prototype._validate = function () {
+    const rules = this.options.rules
+    const formDom = this.$el.find('.z-form')[0]
+    let result = true
+    for (let key in rules) {
+      for (let index in rules[key]) {
+        if (!_testValue.call(this, rules[key][index], key, formDom[key].value)) {
+          result = false
+          break
+        }
+      }
+    }
+    return result
+  }
+
+  function _testValue(rule, key, value) {
+    const $formItem = this.$el.find('[name=' + key + ']').closest('.z-form-item')
+    if (rule.required && !value) {
+      $formItem.addClass('is-error').find('.z-form-item__error').text(rule.message)
+      return false
+    }
+    if (rule.reg && !rule.reg.test(value)) {
+      $formItem.addClass('is-error').find('.z-form-item__error').text(rule.message)
+      return false
+    }
+    $formItem.removeClass('is-error')
+    return true
   }
 
   Zform.prototype._initWrapper = function () {

@@ -20,7 +20,7 @@
           label: '姓名',
           type: 'input', // input select
           name: 'name',
-          value: ''
+          value: '',
         },
         {
           label: '输入框',
@@ -40,9 +40,19 @@
           }]
         }
       ],
-      onSubmit: function (data) {
+      rules: {
+        name: [
+          { required: true, message: '请输入姓名' },
+          { reg: /[\u4e00-\u9fa5]/, message: '姓名必须为中文' }
+        ],
+        sex: [
+          { required: true, message: '请选择性别' }
+        ]
+      },
+      onSubmit: function (data, result) {
         console.log('表单提交')
         console.log(data)
+        alert('表单验证结果：' + result)
       }
     })
   </script>
