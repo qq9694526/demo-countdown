@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORM表单提交</title>
+  <link rel="stylesheet" href="./zform/zform.css">
+</head>
+
+<body>
+  <div id="app"></div>
+  <script src="./zform/jquery-2.0.0.min.js"></script>
+  <script src="./zform/zform.js"></script>
+  <script>
+    var zform = new Zform({
+      el: '#app',
+      items: [
+        {
+          label: '姓名',
+          type: 'input', // input select
+          name: 'name',
+          value: ''
+        },
+        {
+          label: '输入框',
+          type: 'select', // input select
+          name: 'sex',
+          value: '',
+          options: [{
+            name: '请选择',
+            value: ''
+          },
+          {
+            name: '男',
+            value: '1'
+          }, {
+            name: '女',
+            value: '2'
+          }]
+        }
+      ],
+      onSubmit: function (data) {
+        console.log('表单提交')
+        console.log(data)
+      }
+    })
+  </script>
+</body>
+
+</html>
