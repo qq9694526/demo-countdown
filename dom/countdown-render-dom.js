@@ -26,7 +26,7 @@
     this.time = parseInt(options.time);
     this.timer = null
     this.isRunning = false
-    // 初始化dom
+    // 挂载dom
     _initWrapper(this.options)
     // 绑定归零事件
     this.$el.unbind('touchZero').on('touchZero', options.onTouchZero)
@@ -72,9 +72,12 @@
   }
   // 倒计时结束的处理
   CountDown.prototype._turnOver = function () {
-    clearInterval(this.timer) // 清除定时器
-    this.$el.trigger('touchZero', this)  // 派发归零事件
-    if (this.options.needRing) { // 如果有结束铃声开始播放
+    // 清除定时器
+    clearInterval(this.timer)
+    // 派发归零事件
+    this.$el.trigger('touchZero', this)
+    // 如果有结束铃声开始播放
+    if (this.options.needRing) {
       this.$el.find('.c-music')[0].play()
     }
   }
@@ -100,22 +103,88 @@
   }
   // 初始化dom
   function _initWrapper(options) {
-    var htmls = ""
+    // var htmls = ""
     var remainingTime = _clacRemainingTime(options.time)
     var audioPath = options.audioPath
-    htmls = '<div class="c-count-wrap">' +
-      '<span class="c-count-num">' + remainingTime + '</span>' +
-      '<audio preload class="c-music">' +
-      '<source src="' + audioPath + '/music.mp3" type="audio/mpeg">' +
-      '</audio>'
-    if (options.type !== 'mini') {
-      htmls += '<svg xmlns="http://www.w3.org/200/svg" height="110" width="110">' +
-        '<circle cx="55" cy="55" r="50" fill="none" stroke="#ccc" stroke-width="5" stroke-linecap="round" />' +
-        '<circle class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />' +
-        '</svg>'
+    var vNode = {
+      tag: 'div',
+      attrs: {
+        class: 'c-count-wrap'
+      },
+      children: [{
+        tag: 'span',
+        attrs: {
+          class: 'c-count-num'
+        }
+      }, {
+        tag: 'audio',
+        attrs: {
+          class: 'c-music',
+          preload: 'preload'
+        },
+        children: [{
+          tag: 'source',
+          attrs: { src: audioPath + '/music.mp3', type: "audio/mpeg" }
+        }]
+      }]
     }
-    htmls += '</div>'
-    $(options.el).html(htmls)
+    if (options.type !== 'mini') {
+      vNode.children.unshift({
+        tag: 'svg',
+        attrs: { xmlns: 'http://www.w3.org/200/svg', height: '110', width: '110' },
+        children: [{
+          tag: 'circle',
+          attrs: { "cx": '55', "cy": "55", "r": "50", "fill": "none", "stroke": "#ccc", "stroke-width": "5", "stroke-linecap": "round" }
+        }, {
+          tag: 'circle',
+          attrs: { "class": "c-count-process", "cx": "55", "cy": "55", "r": "50", "fill": "none", "stroke": "#ff9800", "stroke-width": "5" }
+        }]
+      })
+    }
+    // if (options.type === 'mini') { // mini类型不渲染svg
+    //   htmls = `<div class="c-count-wrap">
+    //       <span class="c-count-num">${remainingTime}</span>
+    //       <audio preload class="c-music">
+    //         <source src="${audioPath}/music.mp3" type="audio/mpeg">
+    //       </audio>
+    //     </div>`
+    // } else {
+    //   htmls = `<div class="c-count-wrap">
+    //     <svg xmlns="http://www.w3.org/200/svg" height="110" width="110">
+    //       <circle cx="55" cy="55" r="50" fill="none" stroke="#ccc" stroke-width="5" stroke-linecap="round" />
+    //       <circle class="c-count-process" cx="55" cy="55" r="50" fill="none" stroke="#ff9800" stroke-width="5" />
+    //     </svg>
+    //     <span class="c-count-num">${remainingTime}</span>
+    //     <audio preload class="c-music">
+    //       <source src="${audioPath}/music.mp3" type="audio/mpeg">
+    //     </audio>
+    //   </div>`
+    // }
+    $(options.el).html(_createElement(vNode)).find('.c-count-num').text(remainingTime)
+  }
+
+  // 递归创建dom
+  function _createElement(vnode) {
+    var tag = vnode.tag;
+    var attrs = vnode.attrs || {};
+    var children = vnode.children || [];
+    if (!tag) {
+      return null;
+    }
+    //创建元素
+    var elem = document.createElement(tag);
+    //设置属性
+    var attrName;
+    for (attrName in attrs) {
+      if (attrs.hasOwnProperty(attrName)) {
+        elem.setAttribute(attrName, attrs[attrName]);
+      }
+    }
+    //递归子元素
+    children.forEach(childVnode => {
+      elem.appendChild(_createElement(childVnode));
+    })
+    return elem;
   }
   // 移动环形进度条
   function _moveProcess(time, options) {
@@ -130,12 +199,11 @@
   // 挂载style，省去单独引用
   function _appendStyle() {
     var style = document.createElement('style');
-    style.innerText = ".c-count-wrap {display: inline-block;position: relative;font-size: 0;}" +
-      ".c-count-wrap .c-count-num {position: absolute;display: inline-block;top: 50%;left: 0;width: 100%;text-align: center;transform: translateY(-50%);font-size: 14px;white-space: nowrap;}" +
-      ".c-count-wrap .c-count-process {transform-origin: 55px 55px;transform: rotate(-90deg);}"
+    style.innerText = ".c-count-wrap {display: inline-block;position: relative;font-size: 0;}"
+      + ".c-count-wrap .c-count-num {position: absolute;display: inline-block;top: 50%;left: 0;width: 100%;text-align: center;transform: translateY(-50%);font-size: 14px;white-space: nowrap;}"
+      + ".c-count-wrap .c-count-process {transform-origin: 55px 55px;transform: rotate(-90deg);}"
     document.head.appendChild(style)
   }
   _appendStyle()
-
   return CountDown;
 }));
