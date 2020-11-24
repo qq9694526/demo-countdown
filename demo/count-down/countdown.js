@@ -30,30 +30,30 @@
     _initWrapper(this.options)
     // 绑定归零事件
     this.$el.unbind('touchZero').on('touchZero', options.onTouchZero)
-    // 开始
-    this.play = function () {
-      if (this._isRunning) { // 防止多次点击开始，导致的重复初始化倒计时
-        return
-      }
-      if (this.time <= 0) { // 时间不能小于0
-        return
-      }
-      this._initTimer()
-      return this // 支持连缀调用
+  }
+  // 开始
+  CountDown.prototype.play = function () {
+    if (this._isRunning) { // 防止多次点击开始，导致的重复初始化倒计时
+      return
     }
-    // 暂停
-    this.stop = function () {
-      clearInterval(this.timer)
-      this._isRunning = false
-      return this
+    if (this.time <= 0) { // 时间不能小于0
+      return
     }
-    // 重置
-    this.reset = function () {
-      this.stop()
-      this.time = this.options.time
-      _initWrapper(this.options)
-      return this
-    }
+    this._initTimer()
+    return this // 支持连缀调用
+  }
+  // 暂停
+  CountDown.prototype.stop = function () {
+    clearInterval(this.timer)
+    this._isRunning = false
+    return this
+  }
+  // 重置
+  CountDown.prototype.reset = function () {
+    this.stop()
+    this.time = this.options.time
+    _initWrapper(this.options)
+    return this
   }
   // 初始化倒计时的方法
   CountDown.prototype._initTimer = function () {
