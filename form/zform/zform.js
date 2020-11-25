@@ -4,14 +4,16 @@
       (global = global || self, global.Zform = factory());
 }(this, function () {
   'use strict';
+  let $root = null
   function Zform(options) {
     const _this = this
     this.options = options
-    this.$el = $(options.el)
+    $root = $(options.el)
     this.items = options.items
     this._initWrapper()
-    this.$el.on('click', '.z-button--primary', () => {
-      const formDom = this.$el.find('.z-form')[0]
+    // 绑定事件-提交按钮
+    $root.on('click', '.z-button--primary', () => {
+      const formDom = $root.find('.z-form')[0]
       const formData = this.items.map(item => {
         return {
           name: item.name,
@@ -21,29 +23,47 @@
       const validateResult = _this._validate()
       options.onSubmit && options.onSubmit(formData, validateResult)
     })
-    this.$el.on('click', '.z-button--default', () => {
-      this.$el.find('.z-form')[0].reset()
-      this.$el.find('.z-form-item').removeClass('is-error')
+    // 绑定事件-重置按钮
+    $root.on('click', '.z-button--default', () => {
+      $root.find('.z-form')[0].reset()
+      $root.find('.z-form-item').removeClass('is-error')
+    })
+    $root.on('blur', '.z-input__inner', (e) => {
+      const name = e.target.name
+      const rules = this.options.rules[name]
+      _testRules(rules, name, e.target.value)
+    })
+    $root.on('change', '.z-select__inner', (e) => {
+      const name = e.target.name
+      const rules = this.options.rules[name]
+      _testRules(rules, name, e.target.value)
     })
   }
-
+  // 全部校验
   Zform.prototype._validate = function () {
     const rules = this.options.rules
-    const formDom = this.$el.find('.z-form')[0]
-    let result = true
+    const formDom = $root.find('.z-form')[0]
+    let results = []
     for (let key in rules) {
-      for (let index in rules[key]) {
-        if (!_testValue.call(this, rules[key][index], key, formDom[key].value)) {
-          result = false
-          break
-        }
+      const result = _testRules(rules[key], key, formDom[key].value)
+      results.push(result)
+    }
+    return results.every(item => item)
+  }
+  // 校验某项输入的全部规则
+  function _testRules(rules, name, value) {
+    let result = true
+    for (let index in rules) {
+      if (!_testValue.call(this, rules[index], name, value)) {
+        result = false
+        break
       }
     }
     return result
   }
-
+  // 校验某个值
   function _testValue(rule, key, value) {
-    const $formItem = this.$el.find('[name=' + key + ']').closest('.z-form-item')
+    const $formItem = $root.find('[name=' + key + ']').closest('.z-form-item')
     if (rule.required && !value) {
       $formItem.addClass('is-error').find('.z-form-item__error').text(rule.message)
       return false
@@ -55,7 +75,6 @@
     $formItem.removeClass('is-error')
     return true
   }
-
   Zform.prototype._initWrapper = function () {
     var htmls = `<form class="z-form">
     <div class="z-form-item">
@@ -66,7 +85,7 @@
       </div>
     </div>
   </form>`
-    this.$el.html(htmls)
+    $root.html(htmls)
   }
 
   function _itemHtmls(items) {
@@ -90,7 +109,7 @@
   }
   function _selectHtmls(item) {
     return `<div class="z-select">
-    <select class="z-select__inner z-input__inner" name="${item.name}" value="${item.value}">
+    <select class="z-select__inner" name="${item.name}" value="${item.value}">
       ${_optionHtmls(item.options)}
     </select>
   </div>`

@@ -43,7 +43,7 @@
   border-color: #409eff;
 }
 
-.z-input__inner {
+.z-input__inner,.z-select__inner {
   -webkit-appearance: none;
   background-color: #fff;
   background-image: none;
@@ -113,7 +113,7 @@
 
 .z-form-item.is-error .z-input__inner,
 .z-form-item.is-error .z-input__inner:focus,
-.z-form-item.is-error .z-textarea__inner,
-.z-form-item.is-error .z-textarea__inner:focus {
+.z-form-item.is-error .z-select__inner,
+.z-form-item.is-error .z-select__inner:focus {
   border-color: #f56c6c;
 }
