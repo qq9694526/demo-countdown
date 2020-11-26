@@ -7,8 +7,13 @@
 	<style>
 		body {
 			padding: 40px;
+			margin-top: 100px;
+			margin-left: 25%;
 		}
-
+		.wrapper{
+			transform: scale(1.6);
+			/* margin-left: 300px; */
+		}
 		.input-wraper {
 			margin: 20px 0;
 		}
@@ -20,21 +25,24 @@
 </head>
 
 <body>
-	<p>=====环形进度条=====</p>
-	<div id="app"></div>
-	<div class="input-wraper">
-		<input id="time" type="number" placeholder="请输入倒计时时间(s)">
-		<button id="btn-init">实例化</button>
+	<div class="wrapper">
+		<p>=====环形进度条=====</p>
+		<div id="app"></div>
+		<div class="input-wraper">
+			<input id="time" type="number" placeholder="请输入倒计时时间(s)">
+			<button id="btn-init">实例化</button>
+		</div>
+		<button id="btn-stop">暂停</button>
+		<button id="btn-begin">开始</button>
+		<button id="btn-reset">重置</button>
+		<p>=====简洁迷你版=======</p>
+		<div id="app2"></div>
+		<button id="btn-stop2">暂停</button>
+		<button id="btn-begin2">开始</button>
+		<button id="btn-reset2">重置</button>
 	</div>
-	<button id="btn-stop">暂停</button>
-	<button id="btn-begin">开始</button>
-	<button id="btn-reset">重置</button>
 
-	<p>=====简洁迷你版=======</p>
-	<div id="app2"></div>
-	<button id="btn-stop2">暂停</button>
-	<button id="btn-begin2">开始</button>
-	<button id="btn-reset2">重置</button>
+
 </body>
 <script src="./count-down/jquery-2.0.0.min.js"></script>
 <script src="./count-down/countdown.js"></script>
